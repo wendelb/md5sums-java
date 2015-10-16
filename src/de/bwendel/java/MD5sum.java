@@ -2,10 +2,11 @@ package de.bwendel.java;
 
 import java.io.*;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MD5sum {
 	// http://stackoverflow.com/a/304275
-	private static byte[] createChecksum(String filename) throws Exception {
+	private static byte[] createChecksum(String filename) throws Exception  {
 		InputStream fis = new FileInputStream(filename);
 
 		byte[] buffer = new byte[1024];
@@ -47,12 +48,44 @@ public class MD5sum {
 	
 
 	public static void main(String[] args) {
+		if (args.length == 0) {
+			showUsage();
+			System.exit(-1);
+		}
+				
 		try {
-			System.out.println(getChecksumLine("filename.txt"));
+			for (String item: args) {
+				File file = new File(item);
+				
+				if (!file.exists()) {
+					System.err.println(item + " does not exists - skipping");
+					continue;
+				}
+				else if (file.isDirectory()) {
+					//walkDirectory(file);
+				}
+				else if (file.isFile()) {
+					System.out.println(getChecksumLine(item));
+				}
+				else {
+					System.err.println("This should never happen!");
+				}
+			}
 		}
 		catch (Exception e) {
+			System.err.println("Oups - an error occured");
 			e.printStackTrace();
+			System.err.println("Exiting");
+			System.exit(-2);
 		}
+	}
+
+	private static void showUsage() {
+		// ...
+		System.err.println("MD5sum - compute MD5 message digest (Java Version)");
+		System.err.println("by Bernhard Wendel");
+		System.err.println("");
+		System.err.println("Usage: md5sum.jar [FILE] ...");
 	}
 
 }
