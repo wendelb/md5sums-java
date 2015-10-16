@@ -1,10 +1,58 @@
 package de.bwendel.java;
 
+import java.io.*;
+import java.security.MessageDigest;
+
 public class MD5sum {
+	// http://stackoverflow.com/a/304275
+	private static byte[] createChecksum(String filename) throws Exception {
+		InputStream fis = new FileInputStream(filename);
+
+		byte[] buffer = new byte[1024];
+		MessageDigest complete = MessageDigest.getInstance("MD5");
+		int numRead;
+
+		do {
+			numRead = fis.read(buffer);
+			if (numRead > 0) {
+				complete.update(buffer, 0, numRead);
+			}
+		}
+		while (numRead != -1);
+
+		fis.close();
+		return complete.digest();
+	}
+
+	// see this How-to for a faster way to convert
+	// a byte array to a HEX string
+	private static String getMD5Checksum(String filename) throws Exception {
+		byte[] b = createChecksum(filename);
+		String result = "";
+
+		for (int i = 0; i < b.length; i++) {
+			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+		}
+		return result;
+	}
+	
+	private static String getChecksumLine(String filename) throws Exception {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getMD5Checksum(filename));
+		sb.append("   ");
+		sb.append(filename);
+		
+		return sb.toString();
+	}
+	
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		try {
+			System.out.println(getChecksumLine("filename.txt"));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
