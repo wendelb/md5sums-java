@@ -62,7 +62,7 @@ public class MD5sum {
 					continue;
 				}
 				else if (file.isDirectory()) {
-					//walkDirectory(file);
+					walkDirectory(file);
 				}
 				else if (file.isFile()) {
 					System.out.println(getChecksumLine(item));
@@ -78,6 +78,18 @@ public class MD5sum {
 			System.err.println("Exiting");
 			System.exit(-2);
 		}
+	}
+
+	private static void walkDirectory(File folder) throws Exception {
+		// walk through the submitted directory (ignoring subfolders)
+		File[] content = folder.listFiles();
+		
+		for (File item: content) {
+			if (item.isFile()) {
+				System.out.println(getChecksumLine(item.getCanonicalPath()));
+			}
+		}
+		
 	}
 
 	private static void showUsage() {
