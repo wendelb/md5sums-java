@@ -2,7 +2,6 @@ package de.bwendel.java;
 
 import java.io.*;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class MD5sum {
 	// http://stackoverflow.com/a/304275
